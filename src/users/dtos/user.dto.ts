@@ -8,5 +8,7 @@ export class userDto {
     @Expose()
     email: number
 
+    @Expose()
+    admin: boolean
 }
 

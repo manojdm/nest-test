@@ -1,18 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Session, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { customInterceptor, customSerializer } from 'src/serializers/users.serializer';
+import { customInterceptor } from 'src/serializers/users.serializer';
 import { userDto } from './dtos/user.dto';
 import { AuthService } from './auth.services';
 import { createUserDto } from './dtos/create-user.dto';
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from 'src/entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('users')
 @customInterceptor(userDto)
-@UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
 
     constructor(
@@ -34,7 +32,7 @@ export class UsersController {
     
     @Post('/')
     addUser(@Body() body: any){
-        return this.usersService.createUser(body.email, body.password)
+        return this.usersService.createUser(body.email, body.password, body.admin)
     }
 
 
@@ -45,7 +43,7 @@ export class UsersController {
 
     @Post('/signup')
     async SignupUser(@Body() body: createUserDto, @Session() session: any){
-        const user =  await this.authService.signup(body.email, body.password);
+        const user =  await this.authService.signup(body.email, body.password, body.admin);
         session.user = user.id;
         return user
     }

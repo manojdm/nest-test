@@ -10,7 +10,7 @@ export class AuthService {
 
     constructor(private usersService: UsersService){}
 
-    async signup(email: string, password: string){
+    async signup(email: string, password: string, admin: boolean){
         let user = await this.usersService.findUsers(email)
         if(user.length > 0){
             throw new BadRequestException('user already exists');
@@ -22,7 +22,7 @@ export class AuthService {
 
         const result = salt + '.' + hash.toString('hex');
 
-        user = this.usersService.createUser(email, result);
+        user = this.usersService.createUser(email, result, admin);
 
         return user;
     }
